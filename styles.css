@@ -1,0 +1,386 @@
+/* ============================================================
+   Weekly Planner — plugin styles
+   Scoped under `.wp-app` so they never leak into Obsidian's UI.
+   Generated from weekly-planner.html by test/regen_css.py.
+   Only intentional deviation: height:100vh -> height:100%
+   ============================================================ */
+.wp-app{
+  height:100%;
+  overflow:hidden;
+}
+.wp-app{
+  --bg:#f7efe1;
+  --card:#fffdf8;
+  --card2:#fdf6ea;
+  --line:#eadfc9;
+  --ink:#4a443a;
+  --ink2:#8a8171;
+  --btn:#f0e5cf;
+  --btn-line:#e2d3b6;
+  --btn-hover:#e9dcbd;
+  --input-bg:#fffefb;
+  --focus-line:#d9c398;
+  --hover-wash:#f7efdd;
+  --inrange:#f3e3c0;
+  --accent:#f2c14e;
+  --accent-ink:#6b5510;
+  --accent-deep:#d9a92e;
+  --chk-line:#c9b890;
+  --scroll:#ddceb2;
+  --scroll2:#e8dbc2;
+  --muted3:#7c7361;
+  --muted4:#c0b294;
+  --soft:#eee3cb;
+  --soft-hover:#e7d9ba;
+  --soft2:#efe6cf;
+  --soft3:#faf4e6;
+  --soft-ink:#8a7c5f;
+  --note-line:#e8dcc4;
+  --shadow:0 2px 10px rgba(160,125,70,.10);
+  --radius:16px;
+  /* Comfortable minimum width for one day column. A row fits as many columns as
+     this allows; the remaining days wrap onto the next row. Overridden in the
+     responsive blocks below. */
+  --dayfloor:240px;
+}
+.wp-app *{box-sizing:border-box;margin:0;padding:0}
+/* height:100% (not 100vh): inside Obsidian the view must fill its PANE, not the
+   whole window. 100vh made the board taller than its container, which pushed the
+   second row of day columns out of view and produced a stray scrollbar. */
+.wp-app{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;overflow:hidden;height:100%}
+.wp-app .app{display:flex;height:100%;gap:14px;padding:14px}
+/* ---------- sidebar ---------- */
+.wp-app .sidebar{width:250px;flex:0 0 250px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:2px}
+.wp-app .sidebar::-webkit-scrollbar{width:6px}
+.wp-app .sidebar::-webkit-scrollbar-thumb{background:#ddceb2;border-radius:3px}
+.wp-app .card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+.wp-app .card h3{
+  font-size:13px;font-weight:800;letter-spacing:.06em;
+  color:var(--ink);margin-bottom:10px;text-transform:uppercase;
+}
+/* mini calendar */
+.wp-app .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.wp-app .cal-head b{font-size:13px}
+.wp-app .cal-nav{display:flex;gap:4px}
+.wp-app .cal-nav button{width:22px;height:22px;border-radius:6px}
+.wp-app .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.wp-app .cal-grid .dow{font-size:10px;color:var(--ink2);font-weight:700;padding:2px 0}
+.wp-app .cal-grid .d{
+  font-size:11px;padding:4px 0;border-radius:7px;color:var(--ink);cursor:default;
+}
+.wp-app .cal-grid .d.inrange{background:#f3e3c0}
+.wp-app .cal-grid .d.today{background:var(--accent);color:#5a4a12;font-weight:800}
+.wp-app .cal-grid .d.blank{visibility:hidden}
+/* generic small controls */
+.wp-app button{
+  font-family:inherit;font-size:12px;color:#5a5347;background:var(--btn);
+  border:1px solid var(--btn-line);border-radius:8px;padding:5px 10px;cursor:pointer;
+}
+.wp-app button:hover{background:#e9dcbd}
+.wp-app button.mini{padding:2px 7px;font-size:11px;border-radius:6px}
+.wp-app input[type=text], .wp-app input[type=number], .wp-app select, .wp-app textarea{
+  font-family:inherit;font-size:13px;color:var(--ink);
+  background:#fffefb;border:1px solid var(--line);border-radius:8px;padding:5px 8px;outline:none;
+}
+.wp-app input:focus, .wp-app select:focus, .wp-app textarea:focus{border-color:#d9c398}
+.wp-app input[type=date]{padding:4px 6px}
+/* priorities / week list / habits */
+.wp-app .rowitem{display:flex;align-items:center;gap:7px;padding:4px 0}
+.wp-app .rowitem .txt{flex:1;min-width:0}
+.wp-app .rowitem input.txt{border:none;background:transparent;padding:2px 4px;border-radius:6px}
+.wp-app .rowitem input.txt:hover, .wp-app .rowitem input.txt:focus{background:#f7efdd}
+.wp-app .chk{
+  width:15px;height:15px;flex:0 0 15px;
+  border:1.6px solid #c9b890;border-radius:50%;cursor:pointer;background:#fffefb;position:relative;
+}
+.wp-app .chk.on{background:var(--accent);border-color:#d9a92e}
+.wp-app .chk.on::after{
+  content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
+  border:solid #6b5510;border-width:0 2px 2px 0;transform:rotate(42deg);
+}
+.wp-app .dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
+.wp-app .del{border:none;background:none;color:#c8b894;font-size:14px;cursor:pointer;padding:0 2px}
+.wp-app .del:hover{color:#c96a5a}
+.wp-app .addline{
+  display:flex;gap:6px;margin-top:6px;
+}
+.wp-app .addline input{flex:1;min-width:0}
+.wp-app .sqchk{width:13px;height:13px;accent-color:#e0a93e;cursor:pointer}
+.wp-app .hab-head{display:grid;grid-template-columns:1fr repeat(7,16px);gap:2px;align-items:center;margin-bottom:4px}
+.wp-app .hab-head span{font-size:10px;color:var(--ink2);text-align:center;font-weight:700}
+.wp-app .hab-row{display:grid;grid-template-columns:1fr repeat(7,16px);gap:2px;align-items:center;padding:3px 0;border-top:1px dashed #f0e6d2}
+.wp-app .hab-row .hcell{display:flex;align-items:center;min-width:0;gap:3px}
+.wp-app .hab-row .hcell .del{margin-left:auto}
+.wp-app .hab-row .hname{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wp-app .hab-row .sqchk{justify-self:center}
+/* category manager */
+.wp-app .pal-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.wp-app .pal-row select{flex:1}
+.wp-app .swatches{display:flex;gap:5px;margin-bottom:8px}
+.wp-app .swatches i{width:18px;height:18px;border-radius:6px;display:block;border:1px solid rgba(0,0,0,.05)}
+.wp-app .catrow{display:flex;align-items:center;gap:7px;padding:3px 0}
+.wp-app .catrow input{flex:1;min-width:0;border:none;background:transparent;padding:2px 4px}
+.wp-app .catrow input:hover, .wp-app .catrow input:focus{background:#f7efdd;border-radius:6px}
+/* data row */
+.wp-app .datarow{display:flex;gap:6px;flex-wrap:wrap}
+.wp-app .datarow button{flex:1;white-space:nowrap}
+/* ---------- main ---------- */
+/* overflow-y:auto (not hidden) so a wrapped 2nd row of day columns stays
+   reachable by scrolling instead of being clipped.
+   scrollbar-gutter:stable reserves the lane so the content doesn't shift, and
+   the explicit width/thumb rules below make the bar visible rather than an
+   overlay that only appears while scrolling. */
+.wp-app .main{
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-gutter:stable;
+  scrollbar-width:thin;              /* Firefox */
+  scrollbar-color:var(--scroll) transparent;
+}
+.wp-app .main::-webkit-scrollbar{width:10px;height:10px}
+.wp-app .main::-webkit-scrollbar-track{background:rgba(0,0,0,.035);border-radius:5px}
+.wp-app .main::-webkit-scrollbar-thumb{
+  background:var(--scroll);border-radius:5px;border:2px solid transparent;
+  background-clip:padding-box;
+}
+.wp-app .main::-webkit-scrollbar-thumb:hover{background:var(--muted4);background-clip:padding-box}
+.wp-app .head h1{font-size:24px;font-weight:800;letter-spacing:.01em}
+.wp-app .head .sub{font-size:12px;color:var(--ink2);margin:2px 0 8px}
+.wp-app .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wp-app .toolbar label{font-size:12px;color:var(--ink2)}
+.wp-app .toolbar input[type=date]{width:130px}
+.wp-app #periodSel{max-width:220px}
+/* week jump: ‹ [dropdown] › grouped tightly as one control */
+.wp-app #weekJump{max-width:260px}
+.wp-app button.mini.wk{
+  padding:3px 9px;font-size:14px;line-height:1;border-radius:8px;
+  background:var(--card);border:1px solid var(--soft);
+  color:var(--ink);cursor:pointer;box-shadow:var(--shadow);
+}
+.wp-app button.mini.wk:hover{background:var(--soft2);border-color:var(--scroll)}
+.wp-app button.mini.wk:active{background:var(--soft-hover)}
+.wp-app .spacer{flex:1}
+/* Never let a structural row shrink.
+   `.pills` sets `overflow-x:auto`, and a scroll container's automatic minimum
+   size resolves to 0 — so inside the column-flex `.main` it was the ONLY item
+   able to shrink, and it absorbed the entire overflow on its own: the pill row
+   collapsed to a ~2px coloured sliver under a full-height stats grid. `.stats`
+   is a grid (protected by min-content) and `.days` is `flex:0 0 auto`, which is
+   why the pills were the only casualty.
+   Pin all three to their content height; `.main` stays the single scroller. */
+.wp-app .head,
+.wp-app .stats,
+.wp-app .pills{flex:0 0 auto}
+.wp-app .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.wp-app .stat{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  text-align:center;padding:10px 8px;
+}
+.wp-app .stat .lb{font-size:13px;color:var(--ink);margin-bottom:2px}
+.wp-app .stat .vl{font-size:24px;font-weight:800}
+.wp-app .pills{display:flex;gap:10px;overflow-x:auto;padding-bottom:2px}
+.wp-app .pill{
+  flex:1 0 120px;border-radius:12px;padding:8px 10px;font-size:11.5px;line-height:1.5;
+  border:1px solid rgba(0,0,0,.04);min-width:118px;
+}
+.wp-app .pill b{font-size:12.5px;display:block;margin-bottom:1px}
+.wp-app .pill.muted{opacity:.45}
+/* day columns.
+   NEVER scroll here: .main above is the single scroll container for the board.
+   Two nested vertical scrollers is a usability trap — the inner bar is short,
+   catches the wheel first, and hides the fact that more rows exist below.
+   So .days only lays out rows; height is driven by its content and .main
+   scrolls the whole thing (header/stats/pills included). */
+.wp-app .days{
+  flex:0 0 auto;display:flex;flex-wrap:wrap;gap:12px;
+  align-content:flex-start;overflow:visible;padding-bottom:4px;
+}
+/* Day columns wrap instead of squeezing. `flex:1 1 <floor>` lets a row hold as
+   many columns as genuinely fit at a comfortable width, and push the rest onto
+   the next row (7 days -> 4 + 3 on a typical pane). The floor is a min-width
+   too, so columns never shrink below a readable size. */
+.wp-app .daycol{
+  flex:1 1 var(--dayfloor);min-width:var(--dayfloor);
+  /* Height follows content; the cap only kicks in for a task-heavy day so one
+     row cannot eat the whole viewport. align-self:flex-start stops the flex
+     line from stretching a sparse column to the tallest sibling. */
+  align-self:flex-start;
+  min-height:220px;max-height:340px;
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);display:flex;flex-direction:column;
+}
+.wp-app .daycol.dragover{outline:2px dashed #d9b45a;outline-offset:-6px}
+.wp-app .daycol .dhead{text-align:center;padding:12px 10px 6px}
+.wp-app .daycol .dhead .dn{font-size:16px;font-weight:800}
+.wp-app .daycol .dhead .dd{font-size:12px;color:var(--ink2);margin-top:1px}
+/* Wraps ONLY the task list. It grows with its content and starts scrolling once
+   the column hits its max-height; the add / chart buttons sit right after it as
+   normal siblings, so a sparse day keeps them directly under the tasks instead
+   of pinned to the bottom of a tall cell. */
+.wp-app .dbody-scroll{
+  flex:0 1 auto;min-height:0;
+  overflow-y:auto;overflow-x:hidden;
+}
+.wp-app .dbody-scroll::-webkit-scrollbar{width:5px}
+.wp-app .dbody-scroll::-webkit-scrollbar-thumb{background:#e8dbc2;border-radius:3px}
+.wp-app .dbody{padding:4px 10px;display:flex;flex-direction:column;gap:8px}
+/* task card */
+.wp-app .task{
+  border-radius:12px;padding:8px 9px;cursor:grab;position:relative;
+  border:1px solid rgba(0,0,0,.04);
+}
+.wp-app .task:active{cursor:grabbing}
+.wp-app .task.done{opacity:.55}
+.wp-app .task .trow1{display:flex;align-items:flex-start;gap:6px}
+.wp-app .task .title{
+  flex:1;min-width:0;border:none;background:transparent;font-size:13px;font-weight:700;
+  color:var(--ink);padding:1px 2px;border-radius:5px;
+}
+.wp-app .task.done .title{text-decoration:line-through}
+.wp-app .task .title:focus{background:rgba(255,255,255,.6);outline:none}
+.wp-app .task .meta{display:flex;align-items:center;gap:5px;margin-top:6px;flex-wrap:wrap}
+.wp-app .task .meta input[type=number]{width:44px;padding:2px 4px;font-size:11.5px;text-align:center;background:rgba(255,255,255,.65)}
+.wp-app .task .meta select{
+  font-size:11px;padding:2px 4px;border-radius:6px;max-width:105px;
+  background:rgba(255,255,255,.65);
+}
+.wp-app .task .meta .u{font-size:10px;color:#7c7361}
+.wp-app .addpill{
+  margin:0 10px 8px;border:none;background:#eee3cb;border-radius:20px;
+  padding:6px 0;font-size:15px;color:#8a7c5f;width:calc(100% - 20px);
+}
+.wp-app .addpill:hover{background:#e7d9ba}
+.wp-app .chartbtn{
+  margin:0 10px 8px;border:none;background:#efe6cf;border-radius:20px;
+  padding:5px 0;font-size:11.5px;color:#6f6753;width:calc(100% - 20px);
+}
+.wp-app .chartarea{margin:0 10px 8px;background:#faf4e6;border-radius:10px;padding:8px;display:none}
+.wp-app .chartarea.open{display:block}
+.wp-app .chartarea .crow{display:flex;align-items:center;gap:6px;margin:3px 0}
+.wp-app .chartarea .cl{font-size:10px;width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#6f6753}
+.wp-app .chartarea .bars{flex:1;display:flex;flex-direction:column;gap:2px}
+.wp-app .chartarea .bar{height:6px;border-radius:3px}
+.wp-app .chartarea .bar.plan{opacity:.4}
+.wp-app .chartarea .cv{font-size:10px;color:#8a8171;width:64px;text-align:right}
+.wp-app .notewrap{margin:0 10px 12px}
+.wp-app .notewrap .nl{font-size:11px;color:var(--ink2);margin-bottom:4px}
+.wp-app .notewrap textarea{
+  width:100%;height:92px;resize:none;border:none;background:transparent;
+  font-size:12.5px;line-height:24px;padding:0;color:var(--ink);
+  background-image:repeating-linear-gradient(transparent,transparent 23px,#e8dcc4 23px,#e8dcc4 24px);
+}
+/* empty hint */
+.wp-app .emptyhint{font-size:11px;color:#c0b294;text-align:center;padding:8px 0}
+/* (stats column count is handled by the responsive blocks further down) */
+/* ---------- theme overrides (colors driven by JS palette switch) ---------- */
+.wp-app button:hover{background:var(--btn-hover)}
+.wp-app input[type=text], .wp-app input[type=number], .wp-app select, .wp-app textarea{background:var(--input-bg)}
+.wp-app input:focus, .wp-app select:focus, .wp-app textarea:focus{border-color:var(--focus-line)}
+.wp-app .rowitem input.txt:hover, .wp-app .rowitem input.txt:focus, .wp-app .catrow input:hover, .wp-app .catrow input:focus{background:var(--hover-wash)}
+.wp-app .cal-grid .d.inrange{background:var(--inrange)}
+.wp-app .cal-grid .d.today{color:var(--accent-ink)}
+.wp-app .chk{border-color:var(--chk-line);background:var(--input-bg)}
+.wp-app .chk.on{border-color:var(--accent-deep)}
+.wp-app .chk.on::after{border-color:var(--accent-ink)}
+.wp-app .sqchk{accent-color:var(--accent)}
+.wp-app .sidebar::-webkit-scrollbar-thumb, .wp-app .days::-webkit-scrollbar-thumb{background:var(--scroll)}
+.wp-app .dbody-scroll::-webkit-scrollbar-thumb{background:var(--scroll2)}
+.wp-app .task .meta .u{color:var(--muted3)}
+.wp-app .addpill{background:var(--soft);color:var(--soft-ink)}
+.wp-app .addpill:hover{background:var(--soft-hover)}
+.wp-app .chartbtn{background:var(--soft2);color:var(--muted3)}
+.wp-app .chartarea{background:var(--soft3)}
+.wp-app .chartarea .cl, .wp-app .chartarea .cv{color:var(--muted3)}
+.wp-app .notewrap textarea{background-image:repeating-linear-gradient(transparent,transparent 23px,var(--note-line) 23px,var(--note-line) 24px)}
+.wp-app .emptyhint{color:var(--muted4)}
+.wp-app .daycol.dragover{outline-color:var(--accent)}
+.wp-app .hab-row{border-top:1px dashed var(--hover-wash)}
+
+/* ---------- plugin settings tab (lives outside .wp-app) ---------- */
+.wp-settings .wp-set-wide{width:100%;min-width:260px;}
+.wp-settings .wp-set-preview{
+  margin:14px 0 6px;padding:10px 12px;border-radius:8px;
+  background:var(--background-secondary);border:1px solid var(--background-modifier-border);
+}
+.wp-settings .wp-set-preview-label{
+  font-size:var(--font-ui-smaller,12px);
+  color:var(--text-muted);margin-bottom:4px;
+}
+.wp-settings .wp-set-preview code{
+  font-size:var(--font-ui-smaller,12px);word-break:break-all;
+  color:var(--text-normal);background:none;padding:0;
+}
+
+/* ---------- responsive: fit all 7 columns instead of clipping them ----------
+   The standalone tool assumed a wide desktop window (7 x 252px ≈ 1836px).
+   Inside an Obsidian pane that silently pushed Fri/Sat/Sun out of view, and the
+   horizontal scrollbar sits at the bottom of .days — below the fold — so it was
+   unreachable. Make columns shrink to share the available width; only scroll
+   once they hit a readable minimum (`.daycol` min-width).
+--------------------------------------------------------------------------- */
+
+/* columns flex down to fit; drag/resize keeps working (base rule is .daycol above) */
+
+/* tighten column chrome so narrow columns stay readable */
+.wp-app .days{gap:8px}
+.wp-app .daycol .dhead{padding:9px 6px 5px}
+.wp-app .daycol .dhead .dn{font-size:14px}
+.wp-app .daycol .dhead .dd{font-size:11px}
+.wp-app .dbody{padding:4px 7px;gap:6px}
+.wp-app .notewrap{padding:0 7px 7px}
+
+/* --- wide but not huge: shrink the sidebar to give columns room --- */
+@media (max-width:1500px){
+  .wp-app .sidebar{width:214px;flex:0 0 214px}
+}
+
+/* --- medium (<=1250px): sidebar moves above the board so the columns get the
+   full pane width (they wrap into rows, so they no longer need to squeeze). --- */
+@media (max-width:1250px){
+  .wp-app .app{flex-direction:column;gap:10px;padding:10px}
+  /* column-based masonry keeps cards packed tightly regardless of height,
+     so a tall card (habits) doesn't leave a big gap next to a short one */
+  .wp-app .sidebar{
+    width:auto;flex:0 0 auto;
+    display:block;
+    column-count:4;
+    column-gap:8px;
+    max-height:none;overflow:visible;
+    padding-right:0;padding-bottom:0;
+  }
+  .wp-app .sidebar .card{
+    width:auto;min-width:0;
+    break-inside:avoid;
+    -webkit-column-break-inside:avoid;
+    margin:0 0 8px;
+  }
+  .wp-app .head h1{font-size:20px}
+  .wp-app .stats{grid-template-columns:repeat(4,1fr);gap:8px}
+  /* Rows of wrapped columns rarely fit the viewport at once. .days stays a plain
+     flow container (see base rule) and .main scrolls, so nothing is clipped. */
+  .wp-app .days{flex:0 0 auto;overflow:visible;max-height:none;align-content:flex-start}
+}
+@media (max-width:1000px){
+  .wp-app .sidebar{column-count:3}
+}
+
+/* --- narrow (<=960px): a 240px floor only allows 2 columns per row, so the
+   week lays out as 2 x 4 rows. Still no horizontal scrolling: wrapping is what
+   keeps every cell readable. --- */
+@media (max-width:960px){
+  .wp-app .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .wp-app .days{gap:8px}
+}
+
+/* --- very narrow (phone / tiny side pane): one column per row --- */
+@media (max-width:520px){
+  .wp-app .app{padding:8px;gap:8px}
+  .wp-app .sidebar .card{flex:1 1 100%;min-width:0}
+  .wp-app{--dayfloor:100%}
+  .wp-app .head h1{font-size:17px}
+}

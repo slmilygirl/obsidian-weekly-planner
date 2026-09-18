@@ -1,0 +1,16 @@
+{
+  "palette": "macaron",
+  "categories": [
+    "Study",
+    "Sport",
+    "Reading",
+    "Entertainment",
+    "Family Activity",
+    "Hobby"
+  ],
+  "habits": [],
+  "periods": {},
+  "currentId": "",
+  "counter": 3,
+  "lang": "zh"
+}

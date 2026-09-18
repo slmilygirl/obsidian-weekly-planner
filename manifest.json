@@ -1,0 +1,9 @@
+{
+  "id": "weekly-planner",
+  "name": "Weekly Planner",
+  "version": "1.1.7",
+  "minAppVersion": "1.4.0",
+  "description": "Plan your week on a seven-column drag-and-drop board with color themes, habit tracking, time stats, and Markdown export.",
+  "author": "YanXu",
+  "isDesktopOnly": false
+}
