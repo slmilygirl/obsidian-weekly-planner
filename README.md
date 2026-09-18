@@ -1,4 +1,6 @@
 # Weekly Planner
+<img width="2549" height="1403" alt="image" src="https://github.com/user-attachments/assets/5e0f94cd-2f63-40df-95f6-6d1921e8f3aa" />
+
 
 An Obsidian weekly planner: a seven-column drag-and-drop board with six color themes, a bilingual (English / 中文) interface, habit tracking, time statistics, and optional Markdown archiving.
 
