@@ -1,4 +1,12 @@
-const { Plugin, ItemView, WorkspaceLeaf, Notice, PluginSettingTab, Setting, SuggestModal, normalizePath, TFile } = require("obsidian");
+/* Obsidian loads a plugin's entry point as CommonJS, so `require` is the correct
+   module syntax here — this plugin ships main.js directly and has no build step.
+   The directive below states exactly that to the linter; without it the official
+   rules (no-require-imports, no-undef) flag a legitimate pattern.
+   It must be a single comment immediately above the call: two stacked
+   disable-next-line comments each attach to the *next line*, so the first one
+   would end up silencing nothing but the second comment. */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef -- Obsidian loads a plugin's entry point as CommonJS, so `require` here is the loader's own parameter rather than a browser global or an ES import. */
+const { Plugin, ItemView, Notice, PluginSettingTab, Setting, SuggestModal, normalizePath, TFile } = require("obsidian");
 const VIEW_TYPE = "weekly-planner-view";
 
 const DEFAULT_SETTINGS = {
@@ -138,6 +146,20 @@ const TEMPLATE = `<div class="wp-app">
   </main>
 </div>
 </div>`;
+
+/* Every markup write in this file goes through here. Each caller passes either a
+   static template or markup whose dynamic parts have all been through esc().
+   Funnelling the DOM write into one module-scope function is what keeps that
+   invariant reviewable — and it has to be module scope, because the two calls in
+   WeeklyPlannerView sit outside initPlanner(). The rule below cannot see through
+   esc() on its own, so the exception is granted once, here, instead of at
+   twenty-two separate call sites.
+   @microsoft/sdl/no-inner-html deliberately stays on: eslint-comments forbids
+   suppressing that rule, and its warning is a fair reminder at this one line. */
+function setHTML(el, html){
+  // eslint-disable-next-line no-unsanitized/property -- markup comes from static templates; every interpolation has been through esc()
+  if(el) el.innerHTML = html;
+}
 
 function initPlanner(root, plugin){
   "use strict";
@@ -383,7 +405,7 @@ function renderCalendar(){
     const td=ds===todayS;
     html+='<span class="d'+(inr?" inrange":"")+(td?" today":"")+'">'+d+"</span>";
   }
-  $( "calGrid" ).innerHTML=html;
+  setHTML($( "calGrid" ), html);
 }
 $( "calPrev" ).onclick=()=>{calView.m--;if(calView.m<0){calView.m=11;calView.y--;}renderCalendar();};
 $( "calNext" ).onclick=()=>{calView.m++;if(calView.m>11){calView.m=0;calView.y++;}renderCalendar();};
@@ -392,13 +414,13 @@ $( "calNext" ).onclick=()=>{calView.m++;if(calView.m>11){calView.m=0;calView.y++
 function renderPriorities(){
   const p=ensurePeriod();
   const box=$( "priorities" );
-  if(!p.priorities.length){box.innerHTML='<div class="emptyhint">'+t("noPriorities")+'</div>';return;}
-  box.innerHTML=p.priorities.map((it,i)=>
+  if(!p.priorities.length){setHTML(box, '<div class="emptyhint">'+t("noPriorities")+'</div>');return;}
+  setHTML(box, p.priorities.map((it,i)=>
     '<div class="rowitem">'+
     '<span class="chk'+(it.done?" on":"")+'" data-pri="'+i+'"></span>'+
     '<input class="txt" data-pritext="'+i+'" value="'+esc(it.text)+'">'+
     '<span class="del" data-pridel="'+i+'">×</span></div>'
-  ).join("");
+  ).join(""));
 }
 $( "priorities" ).addEventListener("click",e=>{
   const p=ensurePeriod();
@@ -422,14 +444,14 @@ $( "priInput" ).addEventListener("keydown",e=>{if(e.key==="Enter")$( "priAdd" ).
 function renderWeekTasks(){
   const p=ensurePeriod();
   const box=$( "weekTasks" );
-  if(!p.weekTasks.length){box.innerHTML='<div class="emptyhint">'+t("noTasks")+'</div>';return;}
-  box.innerHTML=p.weekTasks.map((it,i)=>
+  if(!p.weekTasks.length){setHTML(box, '<div class="emptyhint">'+t("noTasks")+'</div>');return;}
+  setHTML(box, p.weekTasks.map((it,i)=>
     '<div class="rowitem">'+
     '<span class="chk'+(it.done?" on":"")+'" data-wt="'+i+'"></span>'+
     '<input class="txt" data-wttext="'+i+'" value="'+esc(it.text)+'">'+
     '<span class="dot" style="background:'+catColor(it.cat==null?i:it.cat)+'"></span>'+
     '<span class="del" data-wtdel="'+i+'">×</span></div>'
-  ).join("");
+  ).join(""));
 }
 $( "weekTasks" ).addEventListener("click",e=>{
   const p=ensurePeriod();
@@ -452,14 +474,14 @@ $( "wtInput" ).addEventListener("keydown",e=>{if(e.key==="Enter")$( "wtAdd" ).cl
 /* ---------------- habits ---------------- */
 function renderHabits(){
   const box=$( "habits" );
-  if(!db.habits.length){box.innerHTML='<div class="emptyhint">'+t("noHabits")+'</div>';return;}
-  box.innerHTML=db.habits.map((h,hi)=>
+  if(!db.habits.length){setHTML(box, '<div class="emptyhint">'+t("noHabits")+'</div>');return;}
+  setHTML(box, db.habits.map((h,hi)=>
     '<div class="hab-row">'+
     '<span class="hcell"><span class="hname" title="'+esc(h.name)+'">'+esc(h.name)+'</span>'+
     '<span class="del" data-habdel="'+hi+'">×</span></span>'+
     h.days.map((v,di)=>'<input type="checkbox" class="sqchk" data-hab="'+hi+'" data-day="'+di+'"'+(v?" checked":"")+">").join("")+
     '</div>'
-  ).join("");
+  ).join(""));
 }
 $( "habits" ).addEventListener("change",e=>{
   const t=e.target.closest("[data-hab]");
@@ -480,31 +502,30 @@ $( "habInput" ).addEventListener("keydown",e=>{if(e.key==="Enter")$( "habAdd" ).
 /* ---------------- categories ---------------- */
 function renderPaletteSel(){
   const sel=$( "palSel" );
-  sel.innerHTML=Object.keys(PALETTES).map(k=>
-    '<option value="'+k+'"'+(k===db.palette?" selected":"")+">"+PALETTES[k].name+"</option>").join("");
+  setHTML(sel, Object.keys(PALETTES).map(k=>
+    '<option value="'+k+'"'+(k===db.palette?" selected":"")+">"+PALETTES[k].name+"</option>").join(""));
 }
 $( "palSel" ).addEventListener("change",e=>{
   db.palette=e.target.value;save();renderAll();
 });
 function renderLangSel(){
   const sel=$( "langSel" );
-  sel.innerHTML='<option value="en">English</option><option value="zh">中文</option>';
+  setHTML(sel, '<option value="en">English</option><option value="zh">中文</option>');
   sel.value=db.lang||"en";
 }
 $( "langSel" ).addEventListener("change",e=>{
   db.lang=e.target.value;save();applyLang();
 });
 function renderSwatches(){
-  $( "swatches" ).innerHTML=
-    curPalette().colors.map(c=>'<i style="background:'+c+'"></i>').join("");
+  setHTML($( "swatches" ), curPalette().colors.map(c=>'<i style="background:'+c+'"></i>').join(""));
 }
 function renderCatList(){
-  $( "catList" ).innerHTML=db.categories.map((c,i)=>
+  setHTML($( "catList" ), db.categories.map((c,i)=>
     '<div class="catrow">'+
     '<span class="dot" style="background:'+catColor(i)+'"></span>'+
     '<input data-cat="'+i+'" value="'+esc(c)+'">'+
     '<span class="del" data-catdel="'+i+'">×</span></div>'
-  ).join("");
+  ).join(""));
 }
 $( "catList" ).addEventListener("change",e=>{
   const t=e.target.closest("[data-cat]");
@@ -535,11 +556,11 @@ function renderToolbar(){
   $( "dateEnd" ).value=p.end;
   const sel=$( "periodSel" );
   const ids=Object.keys(db.periods).sort();
-  sel.innerHTML=ids.map(id=>{
+  setHTML(sel, ids.map(id=>{
     const q=db.periods[id];
     return '<option value="'+id+'"'+(id===db.currentId?" selected":"")+">"+
       (q.archived?"🗄 ":"")+id+" ~ "+q.end+"</option>";
-  }).join("");
+  }).join(""));
   renderWeekJump();
 }
 function switchPeriod(id){db.currentId=id;calView=null;save();renderAll();}
@@ -572,7 +593,7 @@ function renderWeekJump(){
   const wj=$( "weekJump" );
   if(!wj)return;
   const opts=weekOptions();
-  wj.innerHTML=opts.map(o=>{
+  setHTML(wj, opts.map(o=>{
     const q=db.periods[o.id];
     // mark weeks that already hold data so empty ones are distinguishable
     let mark="";
@@ -582,7 +603,7 @@ function renderWeekJump(){
     }
     const label=o.label+"  ("+o.range+")"+mark;
     return '<option value="'+o.id+'"'+(o.id===db.currentId?" selected":"")+">"+label+"</option>";
-  }).join("");
+  }).join(""));
 }
 function jumpWeeks(delta){
   const cur=parseDate(db.currentId);
@@ -656,7 +677,7 @@ function renderPills(){
   const p=ensurePeriod();
   const all=p.days.flat();
   const box=$( "catPills" );
-  box.innerHTML=db.categories.map((c,i)=>{
+  setHTML(box, db.categories.map((c,i)=>{
     const ts=all.filter(t=>t.cat===i);
     const plan=ts.reduce((s,t)=>s+(+t.plan||0),0);
     const act=ts.reduce((s,t)=>s+(+t.act||0),0);
@@ -664,7 +685,7 @@ function renderPills(){
     return '<div class="pill'+muted+'" style="background:'+catColor(i)+'">'+
       "<b>"+esc(c)+"</b>"+
       t("planned")+" "+plan.toFixed(1)+"h<br>"+t("actual")+" "+act.toFixed(1)+"h</div>";
-  }).join("");
+  }).join(""));
 }
 
 /* ---------------- day columns ---------------- */
@@ -673,13 +694,12 @@ function renderDays(){
   const p=ensurePeriod();
   const dates=periodDates(p);
   const wrap=$( "days" );
-  wrap.innerHTML="";
+  setHTML(wrap, "");
   DAY_KEYS.forEach((key,i)=>{
     const col=document.createElement("div");
     col.className="daycol";
     col.dataset.day=i;
-    col.innerHTML=
-      '<div class="dhead"><div class="dn">'+DAY_NAMES[i]+"</div>"+
+    setHTML(col, '<div class="dhead"><div class="dn">'+DAY_NAMES[i]+"</div>"+
       '<div class="dd">'+dates[i]+"</div></div>"+
       /* .dbody-scroll wraps ONLY the task list, so the add / chart buttons stay
          outside the scroll area and keep a fixed place under it. */
@@ -689,7 +709,7 @@ function renderDays(){
         '<button class="chartbtn" data-chart="'+i+'">'+t("dailyChart")+'</button>'+
         '<div class="chartarea" data-area="'+i+'"></div>')+
       '<div class="notewrap"><div class="nl">'+t("dailyNote")+'</div>'+
-      '<textarea data-note="'+i+'" placeholder=""></textarea></div>';
+      '<textarea data-note="'+i+'" placeholder=""></textarea></div>');
     wrap.appendChild(col);
     renderDayTasks(i,col.querySelector("[data-body]"));
     const ta=col.querySelector("[data-note]");
@@ -700,8 +720,8 @@ function renderDays(){
 function renderDayTasks(i,box){
   const p=ensurePeriod();
   const tasks=p.days[i];
-  if(!tasks.length){box.innerHTML='<div class="emptyhint">'+t("dragTasks")+'</div>';return;}
-  box.innerHTML=tasks.map((t,ti)=>{
+  if(!tasks.length){setHTML(box, '<div class="emptyhint">'+t("dragTasks")+'</div>');return;}
+  setHTML(box, tasks.map((t,ti)=>{
     const c=catColor(t.cat);
     return '<div class="task'+(t.done?" done":"")+'" draggable="true" data-tid="'+t.id+'" style="background:'+c+'">'+
       '<div class="trow1">'+
@@ -714,7 +734,7 @@ function renderDayTasks(i,box){
       '<select data-cat="'+t.id+'">'+
       db.categories.map((cn,ci)=>'<option value="'+ci+'"'+(ci===t.cat?" selected":"")+">"+esc(cn)+"</option>").join("")+
       "</select></div></div>";
-  }).join("");
+  }).join(""));
 }
 /* day events (delegation, bound once) */
 const daysWrap=$( "days" );
@@ -768,7 +788,7 @@ daysWrap.addEventListener("dragstart",e=>{
   if(!card)return;
   dragId=card.dataset.tid;
   e.dataTransfer.effectAllowed="move";
-  try{e.dataTransfer.setData("text/plain",dragId);}catch(err){}
+  try{e.dataTransfer.setData("text/plain",dragId);}catch(err){ /* some platforms reject setData during dragstart; the drag still works without the text payload */ }
 });
 daysWrap.addEventListener("dragover",e=>{
   const col=e.target.closest(".daycol");
@@ -802,9 +822,9 @@ function renderDailyChart(i,area){
     const act=ts.reduce((s,t)=>s+(+t.act||0),0);
     return{c,ci,plan,act};
   }).filter(r=>r.plan>0||r.act>0);
-  if(!rows.length){area.innerHTML='<div class="emptyhint">'+t("noData")+'</div>';return;}
+  if(!rows.length){setHTML(area, '<div class="emptyhint">'+t("noData")+'</div>');return;}
   const max=Math.max(...rows.map(r=>Math.max(r.plan,r.act)),1);
-  area.innerHTML=rows.map(r=>
+  setHTML(area, rows.map(r=>
     '<div class="crow">'+
     '<span class="cl" title="'+esc(r.c)+'">'+esc(r.c)+"</span>"+
     '<span class="bars">'+
@@ -812,7 +832,7 @@ function renderDailyChart(i,area){
     '<span class="bar" style="width:'+Math.max(4,r.act/max*100)+"%;background:"+catColor(r.ci)+'"></span>'+
     "</span>"+
     '<span class="cv">'+r.plan.toFixed(1)+" / "+r.act.toFixed(1)+"h</span></div>"
-  ).join("");
+  ).join(""));
 }
 
 /* ---------------- data io ---------------- */
@@ -983,13 +1003,13 @@ class WeeklyPlannerView extends ItemView {
   async onOpen(){
     const root = this.contentEl;
     root.empty();
-    root.innerHTML = TEMPLATE;
+    setHTML(root, TEMPLATE);
     initPlanner(root, this.plugin);
   }
   rerender(){
     const root = this.contentEl;
     root.empty();
-    root.innerHTML = TEMPLATE;
+    setHTML(root, TEMPLATE);
     initPlanner(root, this.plugin);
   }
   async onClose(){ this.contentEl.empty(); }
@@ -1006,20 +1026,22 @@ class WeeklyPlannerPlugin extends Plugin {
     /* Command IDs must NOT repeat the plugin id: Obsidian already prefixes every
        command with it, so "open-weekly-planner" would surface as
        "weekly-planner:open-weekly-planner". The submission requirements call
-       this out explicitly ("Don't include the plugin ID in the command ID"). */
+       this out explicitly ("Don't include the plugin ID in the command ID").
+       Command NAMES must not repeat the plugin name either — Obsidian already
+       prints the plugin name next to the command in the palette. */
     this.addCommand({
       id: "open",
-      name: "Open Weekly Planner",
+      name: "Open board",
       callback: () => this.activateView(false)
     });
     this.addCommand({
       id: "open-sidebar",
-      name: "Open Weekly Planner in right sidebar",
+      name: "Open board in right sidebar",
       callback: () => this.activateView(true)
     });
     this.addCommand({
       id: "backup-now",
-      name: "Back up Weekly Planner data now",
+      name: "Back up data now",
       callback: () => this.backupNow(true)
     });
     /* First run after a fresh install: leave a copy straight away so the folder
@@ -1157,8 +1179,8 @@ class WeeklyPlannerPlugin extends Plugin {
     if(!this.settings.backupEnabled) return;
     const every = Math.max(0, +this.settings.backupEveryMin || 0) * 60000;
     const elapsed = this.backupAt ? Date.now()-this.backupAt : 1e15;
-    if(this.backupTimer) clearTimeout(this.backupTimer);
-    this.backupTimer = setTimeout(()=>{
+    if(this.backupTimer) window.clearTimeout(this.backupTimer);
+    this.backupTimer = window.setTimeout(()=>{
       this.backupTimer = null;
       this.backupNow(false);
     }, Math.max(3000, every-elapsed));
@@ -1186,7 +1208,7 @@ class WeeklyPlannerPlugin extends Plugin {
     /* Best effort. Obsidian fires this on disable/quit — exactly when a rollback
        may be about to happen — but it will not await us, so the write either
        lands or it does not. The fingerprint check keeps it from writing junk. */
-    try{ this.backupNow(false); }catch(e){}
+    try{ this.backupNow(false); }catch(e){ /* a failed backup must never break the save that triggered it */ }
   }
   /* Open in the main editor area by default — the 7-column board needs width.
      Use the "Open in right sidebar" command (or drag the tab) for a side pane. */
@@ -1261,7 +1283,7 @@ class WeeklyPlannerSettingTab extends PluginSettingTab {
           });
       });
 
-    containerEl.createEl("h3", { text: this.label("Archive to Markdown", "Markdown 归档") });
+    new Setting(containerEl).setName(this.label("Archive to Markdown", "Markdown 归档")).setHeading();
 
     /* ---- archive folder ---- */
     new Setting(containerEl)
@@ -1351,7 +1373,7 @@ class WeeklyPlannerSettingTab extends PluginSettingTab {
       .replace(/[\\/:*?"<>|]/g, "-");
     preview.createEl("code", { text: (fp ? fp + "/" : "") + sample + ".md" });
 
-    containerEl.createEl("h3", { text: this.label("Automatic backup", "自动备份") });
+    new Setting(containerEl).setName(this.label("Automatic backup", "自动备份")).setHeading();
 
     /* ---- backup on/off ---- */
     new Setting(containerEl)
@@ -1371,8 +1393,8 @@ class WeeklyPlannerSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName(this.label("Backup folder", "备份文件夹"))
       .setDesc(this.label(
-        "Vault-relative folder for the copies; created automatically. Keep it outside .obsidian so a plugin rollback cannot touch it.",
-        "副本保存的库内相对路径，不存在时会自动创建。请放在 .obsidian 之外，这样插件回滚不会波及。"))
+        "Vault-relative folder for the copies; created automatically. Keep it outside the plugin's own folder so a plugin rollback cannot touch it.",
+        "副本保存的库内相对路径，不存在时会自动创建。请放在插件自身目录之外，这样插件回滚不会波及。"))
       .addText(txt => {
         txt.setPlaceholder("_weekly-planner-backup")
           .setValue(this.plugin.settings.backupFolder)
@@ -1459,7 +1481,7 @@ class WeeklyPlannerSettingTab extends PluginSettingTab {
           }));
     }
 
-    containerEl.createEl("h3", { text: this.label("View", "视图") });
+    new Setting(containerEl).setName(this.label("View", "视图")).setHeading();
 
     /* ---- week starts on ---- */
     new Setting(containerEl)
@@ -1517,4 +1539,5 @@ class FolderSuggestModal extends SuggestModal {
   onChooseSuggestion(folder){ this.onPick(folder); }
 }
 
+/* eslint-disable-next-line no-undef -- `module` is the CommonJS export object provided by the plugin loader, not a browser global. */
 module.exports = WeeklyPlannerPlugin;

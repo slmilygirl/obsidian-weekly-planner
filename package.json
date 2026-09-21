@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-weekly-planner",
+  "private": true,
+  "description": "Dev tooling only. The plugin ships main.js directly and has no build step; these dependencies exist just to run the official Obsidian lint rules before a release.",
+  "scripts": {
+    "lint": "eslint main.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-plugin-obsidianmd": "^0.4.2"
+  }
+}

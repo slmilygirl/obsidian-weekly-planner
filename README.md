@@ -1,12 +1,10 @@
 # Weekly Planner
-<img width="2549" height="1403" alt="image" src="https://github.com/user-attachments/assets/5e0f94cd-2f63-40df-95f6-6d1921e8f3aa" />
-
 
 An Obsidian weekly planner: a seven-column drag-and-drop board with six color themes, a bilingual (English / 中文) interface, habit tracking, time statistics, and optional Markdown archiving.
 
-![version](https://img.shields.io/badge/version-1.1.7-blue) ![minAppVersion](https://img.shields.io/badge/Obsidian-%3E%3D1.4.0-purple)
+![version](https://img.shields.io/badge/version-1.1.8-blue) ![minAppVersion](https://img.shields.io/badge/Obsidian-%3E%3D1.4.0-purple)
 
-**English quick start** — copy `manifest.json`, `main.js` and `styles.css` into `<your vault>/.obsidian/plugins/weekly-planner/`, restart Obsidian, then enable **Weekly Planner** under *Settings → Community plugins*. Open the board by clicking the calendar icon in the left ribbon or by running **Open Weekly Planner** from the command palette (`Ctrl+P`) — it does **not** open by itself on startup. Drag task cards between the seven day columns, switch palettes, tick off habits, and optionally archive the week to Markdown. No network access, no telemetry; everything stays inside your vault. MIT licensed.
+**English quick start** — copy `manifest.json`, `main.js` and `styles.css` into `<your vault>/.obsidian/plugins/weekly-planner/`, restart Obsidian, then enable **Weekly Planner** under *Settings → Community plugins*. Open the board by clicking the calendar icon in the left ribbon or by running **Open board** from the command palette (`Ctrl+P`) — it does **not** open by itself on startup. Drag task cards between the seven day columns, switch palettes, tick off habits, and optionally archive the week to Markdown. No network access, no telemetry; everything stays inside your vault. MIT licensed.
 
 ---
 
@@ -47,8 +45,8 @@ An Obsidian weekly planner: a seven-column drag-and-drop board with six color th
 
 ## 使用
 
-- 点击左侧边栏的日历图标，或使用命令面板（`Ctrl+P`）搜索 **Open Weekly Planner** 打开视图
-- 另有命令 **Open Weekly Planner in right sidebar**，直接把看板开在右侧栏
+- 点击左侧边栏的日历图标，或使用命令面板（`Ctrl+P`）搜索 **Open board** 打开视图
+- 另有命令 **Open board in right sidebar**，直接把看板开在右侧栏
 - 注意：**插件启动时不会自动打开视图**。需要手动打开一次，之后 Obsidian 会记住这个标签页
 - 视图可像普通标签页一样停靠、分屏
 
